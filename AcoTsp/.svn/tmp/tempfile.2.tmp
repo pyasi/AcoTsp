@@ -1,0 +1,136 @@
+import java.util.*;
+import java.io.IOException;
+import java.io.FileReader;
+import java.io.BufferedReader;
+
+public class AcoTsp{
+
+	public class City {
+
+		//Coordinates
+		private double xCoor;
+		private double yCoor;
+
+		public City(double x, double y) {
+			xCoor = x;
+			yCoor = y;
+		}
+
+		public double getXCoor() {
+			return xCoor;
+		}
+
+		public double getYCoor() {
+			return yCoor;
+		}
+
+		public void setXCoor(double x) {
+			xCoor = x;
+		}
+
+		public void setYCoor(double y) {
+			yCoor = y;
+		}
+
+	}
+
+	//Ints
+	private static int numAnts;
+	private static int numIterations;
+	private static int numCities;
+
+	//Doubles
+	private static double alpha;
+	private static double beta;
+	private static double phi;
+	private static double epsilon;
+
+	//Read in the TSP file and initialize cities
+	public static void readTSP(String filePath) throws IOException{
+
+		try{
+			//Create Reader
+			FileReader reader = new FileReader(filePath);
+			BufferedReader bufferedReader = new BufferedReader(reader);
+
+			//Create Variable
+			String currentLine;
+			String cityCount;
+			StringBuilder stringBuilder = new StringBuilder();
+			
+			//Read in the header
+			while(true){
+			
+				currentLine = bufferedReader.readLine();
+				
+				//Get the Number of Cities
+				if(currentLine.contains("DIMENSION")){
+					for(int i = 0;i < currentLine.length(); i++)
+					{
+						//Create string of number of cities
+						if(Character.isDigit(currentLine.charAt(i))){
+							stringBuilder.append(currentLine.charAt(i));
+						}
+
+					}
+				}
+				//End loop
+				if(currentLine.contains("NODE_COORD_SECTION")){
+					break;
+				}
+			}
+			
+			//Set numCities
+			cityCount = stringBuilder.toString();
+			numCities = Integer.parseInt(cityCount);
+			System.out.println("numCities: " + numCities);
+
+			//Loop to obtain coordinates of cities
+			int cityNumber;
+			double xCord, yCord;
+			while(true){	
+				currentLine = bufferedReader.readLine();
+				
+				//Break loop at the end of the file
+				if(currentLine.contains("EOF")){
+					break;
+				}
+				
+				//Get the cities coordinates
+				String[] splited = currentLine.split("\\s+");	
+				cityNumber = Integer.parseInt(splited[1]);
+				xCord = Double.parseDouble(splited[2]);
+				yCord = Double.parseDouble(splited[3]);
+			}	
+		}
+	}
+
+	//Main method
+	public static void main(String[] args) throws IOException{
+
+		String filePath = " ";
+
+		if(args.length < 1){
+			System.out.println("Please enter arguments");
+			return;
+		}
+
+		filePath = args[0];
+
+		numAnts = Integer.parseInt(args[1]);
+		numIterations = Integer.parseInt(args[2]);
+
+		alpha = Double.parseDouble(args[3]);
+		beta = Double.parseDouble(args[4]);
+		phi = Double.parseDouble(args[5]);
+		epsilon = Double.parseDouble(args[6]);
+
+		System.out.println("Num Ants: " + numAnts + " Epsilon: " + epsilon);
+
+
+		readTSP(filePath);
+
+	}
+
+}
+
